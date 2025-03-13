@@ -37,7 +37,7 @@ body {
     }
 
     #container-imagem {
-        background: url(../imagens/location-1244030_640.png) no-repeat top center;
+        background: url(location-1244030_640.png) no-repeat top center;
         background-size: contain;
         width: 400px;
         height: 200px;
