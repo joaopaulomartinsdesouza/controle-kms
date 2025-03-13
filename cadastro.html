@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="estilos/style-principal-geral.css">
+    <link rel="stylesheet" href="estilos/style-versoes.css">
+    <link rel="shortcut icon" href="imagens/favicon/favicon-16x16.png" type="image/x-icon">
+    <title>Cadastro</title>
+    <style>
+        #mensagem {
+            margin-top: 10px;
+            padding: 10px;
+            text-align: center;
+        }
+        .sucesso {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .erro {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section id="container-principal">
+            <section id="container-imagem">
+            </section>
+
+            <h1>Cadastro Login</h1>
+
+            <form action="#" method="post" autocomplete="on">
+                <section class="caixa">
+                    <label for="email">
+                        <span class="material-symbols-outlined">person</span>
+                    </label>
+                    <input class="caixa-texto" type="email" name="email" id="email" placeholder="Digite seu e-mail" autocomplete="email">
+                </section>
+
+                <section class="caixa">
+                    <label for="senha">
+                        <span class="material-symbols-outlined">vpn_key</span>
+                    </label>
+                    <input class="caixa-texto" type="password" name="senha" id="senha" placeholder="Crie uma senha" minlength="8" max="15" autocomplete="current-password">
+                </section>
+
+                <section>
+                    <input id="btn-logar" type="submit" value="Enviar">
+                </section>
+            </form>
+
+            <div id="mensagem"></div> <!-- Área para exibir mensagens -->
+        </section>
+    </main>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-auth.js"></script>
+
+    <script type="module">
+        // Importar as funções necessárias do SDK do Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";  // Importando a autenticação
+
+        // Configuração do seu projeto Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJkUFdj1FTlbreV19MEQeZ6XHqnM9uir4",
+            authDomain: "controle-de-frotas-a476b.firebaseapp.com",
+            projectId: "controle-de-frotas-a476b",
+            storageBucket: "controle-de-frotas-a476b.firebasestorage.app",
+            messagingSenderId: "382107444959",
+            appId: "1:382107444959:web:ec5df2c463fc594a9b2b6a",
+            measurementId: "G-PGT5F88FC0"
+        };
+
+        // Inicializar o Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app); // Inicializando a autenticação
+
+        // Função para exibir mensagens
+        function exibirMensagem(tipo, mensagem) {
+            const mensagemDiv = document.getElementById('mensagem');
+            mensagemDiv.textContent = mensagem;
+            mensagemDiv.className = tipo; // Aplica a classe de estilo para erro ou sucesso
+        }
+
+        // Função para registrar um novo usuário
+        document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Impede o envio tradicional do formulário
+
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+
+            // Validação simples: verificar se os campos estão preenchidos
+            if (!email || !senha) {
+                exibirMensagem('erro', 'Por favor, preencha todos os campos.');
+                return;
+            }
+
+            // Criar um novo usuário com e-mail e senha
+            createUserWithEmailAndPassword(auth, email, senha)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    exibirMensagem('sucesso', 'Usuário cadastrado com sucesso!');
+                    console.log(user); // Você pode verificar o usuário criado no console
+
+                    // Após o cadastro com sucesso, redireciona para a página de login
+                    window.location.href = "index.html";  // Redireciona para a página de login após o cadastro
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    exibirMensagem('erro', `Erro: ${errorMessage}`);
+                    console.log(errorCode, errorMessage); // Log de erro para depuração
+                });
+        });
+    </script>
+</body>
+</html>

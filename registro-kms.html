@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="estilos/style-principal-geral.css">
+    <link rel="stylesheet" href="estilos/style-registro-kms.css">
+    <link rel="stylesheet" href="estilos/style-versoes-registro-kms.css">
+    <link rel="shortcut icon" href="imagens/favicon/favicon-16x16.png" type="image/x-icon">
+    <title>Registro de Kms</title>
+</head>
+<body>
+    <main>
+        <section id="container">
+            <section id="container-imagem"></section>
+
+            <h1>Registro de KM</h1>
+
+            <form id="registroForm" autocomplete="on">
+                <!-- Seção de inputs -->
+                <section class="caixa-versoes">
+                    <section class="caixa">
+                        <label for="nome">
+                            <span class="material-symbols-outlined"> badge </span>
+                        </label>
+                        <input class="caixa-texto" type="text" name="nome" id="nome" placeholder="Digite seu nome" required>
+                    </section>
+                    <section class="caixa">
+                        <label for="veiculo">
+                            <span class="material-symbols-outlined"> no_crash </span>
+                        </label>
+                        <input class="caixa-texto" type="text" name="veiculo" id="veiculo" placeholder="Digite o modelo do veículo" required>
+                    </section>
+                </section>
+
+                <section class="caixa-versoes">
+                    <section class="caixa">
+                        <label for="placa">
+                            <span class="material-symbols-outlined"> thermostat_carbon </span>
+                        </label>
+                        <input class="caixa-texto" type="text" name="placa" id="placa" placeholder="Digite a placa do veículo" required>
+                    </section>
+                    <section class="caixa">
+                        <label for="data">
+                            <span class="material-symbols-outlined"> calendar_month </span>
+                        </label>
+                        <input class="caixa-texto" type="date" name="data" id="data" required>
+                    </section>
+                </section>
+
+                <section class="caixa-versoes">
+                    <section class="caixa">
+                        <label for="km-inicial">
+                            <span class="material-symbols-outlined"> swap_driving_apps_wheel </span>
+                        </label>
+                        <input class="caixa-texto" type="number" name="km-inicial" id="km-inicial" placeholder="Digite o km inicial" required>
+                    </section>
+                    <section class="caixa">
+                        <label for="local-partida">
+                            <span class="material-symbols-outlined"> emoji_transportation </span>
+                        </label>
+                        <input class="caixa-texto" type="text" name="local-partida" id="local-partida" placeholder="Digite o local de partida" required>
+                    </section>
+                </section>
+
+                <section class="caixa-versoes">
+                    <section class="caixa">
+                        <label for="horario-saida">
+                            <span class="material-symbols-outlined"> alarm </span>
+                        </label>
+                        <input class="caixa-texto" type="time" name="horario-saida" id="horario-saida" required>
+                    </section>
+                    <section class="caixa">
+                        <label for="local-chegada">
+                            <span class="material-symbols-outlined"> emoji_transportation </span>
+                        </label>
+                        <input class="caixa-texto" type="text" name="local-chegada" id="local-chegada" placeholder="Digite o local de chegada" required>
+                    </section>
+                </section>
+
+                <section class="caixa-versoes">
+                    <section class="caixa">
+                        <label for="horario-chegada">
+                            <span class="material-symbols-outlined"> alarm </span>
+                        </label>
+                        <input class="caixa-texto" type="time" name="horario-chegada" id="horario-chegada" required>
+                    </section>
+                    <section class="caixa">
+                        <label for="km-final">
+                            <span class="material-symbols-outlined"> swap_driving_apps_wheel </span>
+                        </label>
+                        <input class="caixa-texto" type="number" name="km-final" id="km-final" placeholder="Digite o km final" required>
+                    </section>
+                </section>
+
+                <section>
+                    <label for="observacao">
+                        Digite suas observações: <br>
+                        <textarea id="caixa-observacao" name="observacao" required></textarea>
+                    </label>
+                </section>
+
+                <section>
+                    <input id="btn-enviar" type="submit" value="Enviar">
+                </section>
+            </form>
+        </section>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-auth.js"; 
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js";
+        
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJkUFdj1FTlbreV19MEQeZ6XHqnM9uir4",
+            authDomain: "controle-de-frotas-a476b.firebaseapp.com",
+            projectId: "controle-de-frotas-a476b",
+            storageBucket: "controle-de-frotas-a476b.firebasestorage.app",
+            messagingSenderId: "382107444959",
+            appId: "1:382107444959:web:ec5df2c463fc594a9b2b6a",
+            measurementId: "G-PGT5F88FC0"
+        };
+        
+        // Inicializando o Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        // Verifica o status da autenticação
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                console.log("Usuário não autenticado. Redirecionando para login.");
+                window.location.href = 'login.html'; // Se o usuário não estiver logado, redireciona
+            } else {
+                console.log("Usuário autenticado:", user);
+            }
+        });
+        
+        // Função para enviar os dados
+        document.getElementById("registroForm").addEventListener("submit", async function(event) {
+            event.preventDefault(); // Impede o envio tradicional
+            // Captura os valores dos campos
+            const nome = document.getElementById("nome").value;
+            const veiculo = document.getElementById("veiculo").value;
+            const placa = document.getElementById("placa").value;
+            const data = document.getElementById("data").value;
+            const kmInicial = document.getElementById("km-inicial").value;
+            const localPartida = document.getElementById("local-partida").value;
+            const horarioSaida = document.getElementById("horario-saida").value;
+            const localChegada = document.getElementById("local-chegada").value;
+            const horarioChegada = document.getElementById("horario-chegada").value;
+            const kmFinal = document.getElementById("km-final").value;
+            const observacao = document.getElementById("caixa-observacao").value;
+            try {
+                // Salva os dados no Firestore
+                const docRef = await addDoc(collection(db, "viagens"), {
+                    nome,
+                    veiculo,
+                    placa,
+                    data,
+                    kmInicial,
+                    localPartida,
+                    horarioSaida,
+                    localChegada,
+                    horarioChegada,
+                    kmFinal,
+                    observacao,
+                    timestamp: new Date() // Armazena o timestamp no momento do registro
+                });
+                console.log("Documento registrado com ID:", docRef.id);
+                alert("Registro de KM enviado com sucesso!");
+                // Opcional: Redirecionar ou limpar o formulário após o envio
+                window.location.href = 'registro-kms.html'; // Redireciona para outra página ou limpa o formulário
+            } catch (error) {
+                console.error("Erro ao salvar no Firebase:", error);
+                alert("Erro ao registrar os dados.");
+            }
+        });
+    </script>
+
+</body>
+</html>
